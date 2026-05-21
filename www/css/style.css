@@ -1,0 +1,523 @@
+/* Import Google fonts: Montserrat for titles, Roboto for body */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500;700&display=swap');
+
+html {
+        position: relative;
+        min-height: 100%;
+}
+
+/* https://colorhunt.co/palette/222831393e4600adb5eeeeee */
+/*
+#222831 : dark navy
+#393E46 : navy
+#00ADB5 : blue
+#EEEEEE : beige
+*/
+
+body {
+        color: #222831;
+        background-color: #EEEEEE;
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+        font-weight: normal;
+        letter-spacing: 0;
+        line-height: 150%;
+        margin-bottom: 30px;
+        margin-left: 0px;
+        margin-right: 0px;
+        margin-top: 0px;
+        opacity: 1.00;
+        padding-bottom: 0px;
+        padding-top: 0px;
+        text-align: left;
+        text-decoration: none;
+        text-indent: 0px;
+        text-transform: none;
+        -webkit-text-size-adjust: none;
+}
+
+h1, h2, h3, h4 {
+        font-family: "Montserrat", sans-serif;
+        font-weight: 700;
+        color: #393E46; 
+        margin-top: 18px;
+}
+
+a {
+        color: #00ADB5;
+        text-decoration: none;
+}
+
+a:hover {
+        color: #393E46;
+        text-decoration: underline;
+}
+
+div {
+        overflow: visible;
+}
+
+img {
+        border: none;
+}
+
+footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 30px;
+        background-color: #393E46;
+}
+
+.copyright {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        font-size: 14px;
+        color: #EEEEEE;
+        text-align: center;
+}
+
+.navbar {
+        background-color: #393E46;
+        -webkit-transition: padding .3s;
+        -moz-transition: padding .3s;
+        transition: padding .3s;
+        border: none;
+}
+
+.navbar .navbar-nav {
+        float: right;
+        padding-right: 30px;
+        padding-top: 10px;
+}
+
+.navbar-default .navbar-nav>li>a {
+        font-family: "Ubuntu", sans-serif;
+        font-size: 18 px;
+        font-weight: bold;
+        color: #EEEEEE;
+        background: #393E46;
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+}
+
+.navbar-default .navbar-nav>.active>a,
+.navbar-default .navbar-nav>.active>a:focus,
+.navbar-default .navbar-nav>.active>a:hover {
+        color: #EEEEEE;
+        background-color: #00ADB5;
+}
+
+.navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav>li>a:hover {
+        color: #393E46;
+        background-color: #00ADB5;
+}
+
+footnote {
+        font-family: "Ubuntu", sans-serif;
+        color: #EF767A;
+        font-size: 16px;
+        font-style: italic;
+}
+
+#controls {
+        /* Appearance */
+        background-color: white;
+        padding: 0 20px 20px 20px;
+        cursor: move;
+        /* Fade out while not hovering */
+        opacity: 0.7;
+        zoom: 0.9;
+        transition: opacity 500ms 1s;
+}
+
+#controls:hover {
+        /* Fade in while hovering */
+        opacity: 0.95;
+        transition-delay: 0;
+}
+
+.main {
+        width: 90%;
+        margin: auto;
+        overflow: visible;
+}
+
+.quote {
+        background: #FFFFFF;
+        width: 100%;
+        max-width: 500px;
+        min-width: 450px;
+        margin: 1em auto 0;
+        padding: 1em;
+        text-align: center;
+        line-height: 30px;
+}
+
+blockquote {
+        display: block;
+        border-width: 2px 0;
+        border-style: solid;
+        border-color: #EF767A;
+        padding: 1em 0 0.5em;
+        margin: 1em 0;
+        position: relative;
+        font-size: 24px;
+        color: #EF767A;
+}
+
+blockquote:before {
+        content: attr(cite);
+        position: absolute;
+        top: 0em;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #F8F3D4;
+        width: 16rem;
+        height: 2rem;
+        font: 1em/0.95em "Ubuntu", sans-serif;;
+        color: #EF767A;
+        text-align: center;
+        font-weight: bold;
+}
+
+/* Acknowledgement: https://github.com/statnmap/RshinyApps/tree/master/On-Off_SwitchButton */
+/*                                                                                         */
+/* ON-OFF switch button */
+/* Sébastien Rochette */
+/* http://sebrock.fr/en/ */
+/* CSS modified from : https://proto.io/freebies/onoff/ */
+/* All switch */
+.onoffswitch {
+        width: 130px;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        font-family: "Ubuntu", sans-serif;
+}
+
+.onoffswitch-checkbox {
+        display: none;
+}
+
+.onoffswitch-label {
+        display: block;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid #999999;
+        border-radius: 30px;
+}
+
+.onoffswitch-inner {
+        display: block;
+        width: 200%;
+        margin-left: -100%;
+        transition: margin 0.2s ease-in 0s;
+}
+
+.onoffswitch-inner:before,
+.onoffswitch-inner:after {
+        display: block;
+        float: left;
+        width: 50%;
+        height: 40px;
+        padding: 0;
+        line-height: 40px;
+        font-size: 16px;
+        color: white;
+        font-family: "Ubuntu", sans-serif;
+        font-weight: bold;
+        box-sizing: border-box;
+}
+
+/* All switch - default div class */
+.onoffswitch-inner:before {
+        content: " ";
+        padding-left: 10px;
+}
+
+.onoffswitch-inner:after {
+        content: " ";
+        padding-right: 10px;
+        text-align: right;
+}
+
+.onoffswitch-switch {
+        display: block;
+        width: 30px;
+        height: 30px;
+        margin: 6.5px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        border-radius: 30px;
+        right: 87px;
+        transition: all 0.3s ease-in 0s;
+}
+
+.onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-switch {
+        right: 0px;
+}
+
+.onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-inner {
+        margin-left: 0;
+}
+
+/* Color change */
+/* RedGreen */
+.RedGreen .onoffswitch-inner:before {
+        background-color: #008A0C;
+        color: #FFFFFF;
+}
+
+.RedGreen .onoffswitch-inner:after {
+        background-color: #D10000;
+        color: #FFFFFF;
+}
+
+.RedGreen .onoffswitch-switch {
+        background: #FFFFFF;
+        border: 2px solid #FFFFFF;
+}
+
+/* GreyBlue */
+.GreyBlue .onoffswitch-inner:before {
+        background-color: #FFFFFF;
+        color: #428bca;
+}
+
+.GreyBlue .onoffswitch-inner:after {
+        background-color: #FFFFFF;
+        color: #AAA;
+}
+
+.GreyBlue .onoffswitch-switch {
+        background: #AAA;
+        border: 2px solid #AAA;
+}
+
+.GreyBlue .onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-switch {
+        background-color: #428bca;
+}
+
+/* Text change */
+/* On / Off */
+.OnOff .onoffswitch-inner:before {
+        content: "ON";
+}
+
+.OnOff .onoffswitch-inner:after {
+        content: "OFF";
+}
+
+/* Yes / No */
+.YesNo .onoffswitch-inner:before {
+        content: "YES";
+}
+
+.YesNo .onoffswitch-inner:after {
+        content: "NO";
+}
+
+/* True / False */
+.TrueFalse .onoffswitch-inner:before {
+        content: "Pearson";
+}
+
+.TrueFalse .onoffswitch-inner:after {
+        content: "Spearman";
+}
+
+/* Panel figures */
+/* Square plot wrapper: width constrained by parent column and viewport */
+.sq-plot-wrap {
+  width: min(100%, 92vw, 92vh);
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden; /* prevents accidental horizontal scrollbars */
+}
+
+/* Any Shiny plot output inside the square wrapper */
+.sq-plot-wrap .shiny-plot-output {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: block;
+}
+
+/* Ensure rendered plot surface fills the output container */
+.sq-plot-wrap .shiny-plot-output > img,
+.sq-plot-wrap .shiny-plot-output > canvas {
+  width: 100% !important;
+  height: auto !important; /* keep aspect until JS forces square height */
+  display: block;
+}
+
+.page-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 18px;
+}
+
+.page-content h2, .page-content h3 {
+  margin-top: 18px;
+}
+
+/* -----------------------------
+   Interpretation tab + sidebar-interp shared
+   (extracted from interpretation.md inline <style> so the classes are
+    available globally, including in the Tutorial sidebar)
+------------------------------ */
+.interp-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  line-height: 1.55;
+  color: #222;
+}
+.interp-wrap h1, .interp-wrap h2, .interp-wrap h3 {
+  margin: 0.9em 0 0.4em 0;
+}
+.interp-wrap p {
+  margin: 0.5em 0;
+}
+.interp-muted {
+  color: #4d4d4d;
+  font-size: 0.95em;
+}
+
+.step-card {
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 14px 0 18px 0;
+  background: #fff;
+}
+.step-title {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.step-subtitle {
+  margin: 0 0 10px 0;
+  color: #4d4d4d;
+}
+
+.step-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-top: 10px;
+}
+.step-table td {
+  border: 1px solid #ededed;
+  vertical-align: top;
+  padding: 12px 12px 10px 12px;
+}
+.step-table .cell-head {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.86em;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.cell-rep  { background: rgba(133, 218, 250, 0.35); color: #1a3c55; }
+.cell-look { background: rgba( 64,  79, 124, 0.12); color: #2a2f4f; }
+.cell-use  { background: rgba( 16, 185, 129, 0.16); color: #065f46; }
+.cell-note { background: rgba(214, 104,  83, 0.14); color: #5a1f16; }
+
+.step-snapshot {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.step-snapshot .snap-box {
+  flex: 1;
+  border: 1px dashed #cfcfcf;
+  border-radius: 12px;
+  padding: 14px;
+  background: #fafafa;
+}
+.step-snapshot .snap-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.step-snapshot img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+}
+
+.code-inline {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.95em;
+  background: #f6f6f6;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+.ul-tight       { margin: 6px 0 0 18px; }
+.ul-tight li    { margin: 4px 0; }
+
+/* -----------------------------
+   .sidebar-interp — fully independent style set for the Tutorial sidebar.
+   Uses its own classes (.sidebar-section*) so it does NOT share or fight
+   with the Interpretation tab's .step-card/.step-table rules.
+   Built by .interpretation_step() in Rsource/preset.R, which transforms
+   each interpretation step's <td> cells into <div class="sidebar-section">.
+------------------------------ */
+.sidebar-interp {
+  font-size: 12px;
+  color: #222;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+.sidebar-interp .sidebar-step-card {
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+}
+.sidebar-interp .sidebar-step-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.sidebar-interp .sidebar-section {
+  border-top: 1px solid #ededed;
+  padding: 8px 0;
+}
+.sidebar-interp .sidebar-section:first-of-type {
+  border-top: none;
+  padding-top: 4px;
+}
+.sidebar-interp .sidebar-section-head {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.sidebar-interp .sidebar-rep  { background: rgba(133, 218, 250, 0.35); color: #1a3c55; }
+.sidebar-interp .sidebar-look { background: rgba( 64,  79, 124, 0.12); color: #2a2f4f; }
+.sidebar-interp .sidebar-use  { background: rgba( 16, 185, 129, 0.16); color: #065f46; }
+.sidebar-interp .sidebar-note { background: rgba(214, 104,  83, 0.14); color: #5a1f16; }
+.sidebar-interp p {
+  margin: 4px 0;
+  font-size: 12px;
+}
+.sidebar-interp ul {
+  margin: 4px 0 0 16px;
+  padding: 0;
+}
+.sidebar-interp li {
+  margin: 2px 0;
+}

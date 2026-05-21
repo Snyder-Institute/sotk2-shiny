@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# R session
+.Rhistory
+.Rapp.history
+.Rproj.user/
+.Rdata
+.RData
+.httr-oauth
+
+# Demo data (~236 MB; fetched via scripts/setup_data.R)
+data/*.RDS
+!data/.gitkeep
+
+# Shiny / rsconnect deploy artefacts
+rsconnect/
+manifest.json
+
+# Logs
+*.log
