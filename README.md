@@ -87,4 +87,4 @@ MIT. See [LICENSE](LICENSE).
 
 ## Citation
 
-If you use sotk2 in your work, please cite the associated manuscript: _to be added_.
+[Reproducible transcriptional modules define glioblastoma ecosystems across independent cohorts](https://doi.org/10.64898/2026.05.20.726700).

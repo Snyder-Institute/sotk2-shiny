@@ -149,7 +149,7 @@ p { line-height: 1.55; }
   <div class="card">
     <h3>Citation</h3>
     <p style="margin:0 0 10px 0;">
-      If you use <strong>sotk2</strong> in your work, please cite the associated manuscript: <i>to be added</i>
+      <a href="https://doi.org/10.64898/2026.05.20.726700" target="_blank" rel="noopener noreferrer">Reproducible transcriptional modules define glioblastoma ecosystems across independent cohorts</a>.
     </p>    
   </div>
 </div>
