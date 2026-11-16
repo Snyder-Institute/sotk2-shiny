@@ -1,0 +1,12 @@
+# Keep the image to the app bundle + data/
+.git
+.gitignore
+.dockerignore
+.DS_Store
+**/.DS_Store
+.Rhistory
+.Rproj.user
+rsconnect
+docker
+scripts
+*.log

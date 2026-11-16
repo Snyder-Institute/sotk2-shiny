@@ -14,20 +14,6 @@ library(shiny)
 library(sotk2)
 
 #### #### #### #### #### #### #### #### #### ####
-# Runtime mode: full | lite (browse-only)
-# - full : every Tutorial input is live; user can re-run SOSet()/SOTK() with different settings.
-# - lite : the app displays the precomputed soObj.RDS only; recompute inputs are hidden and
-#          their corresponding reactives short-circuit to the precomputed object. Display-only
-#          controls (labels, node size, annotation choice, cohort/community pickers) remain live.
-SOTK2_MODE <- tolower(Sys.getenv("SOTK2_MODE", "full"))
-if (!SOTK2_MODE %in% c("full", "lite")) {
-        message(sprintf("Unrecognized SOTK2_MODE='%s'; defaulting to 'full'.", SOTK2_MODE))
-        SOTK2_MODE <- "full"
-}
-LITE <- identical(SOTK2_MODE, "lite")
-message(sprintf("SOTK2_MODE: %s", SOTK2_MODE))
-
-#### #### #### #### #### #### #### #### #### ####
 # Global settings / data
 source("./Rsource/preset.R")
 
@@ -35,14 +21,6 @@ source("./Rsource/preset.R")
 data_dir <- "data"
 soObj_path <- file.path(data_dir, "soObj.RDS")
 soObj <- if (file.exists(soObj_path)) readRDS(soObj_path) else NULL
-
-if (LITE && is.null(soObj)) {
-        stop(
-                "SOTK2_MODE='lite' requires data/soObj.RDS but it was not found. ",
-                "Run `Rscript scripts/setup_data.R` to fetch the demo data, ",
-                "or switch to SOTK2_MODE=full (which can recompute from nmfRes_*.RDS)."
-        )
-}
 
 nmf_paths <- list(
         GLASS   = file.path(data_dir, "nmfRes_GLASS.RDS"),
@@ -55,15 +33,6 @@ nmf_paths <- list(
 ui <- navbarPage(
         title = div(
                 "sotk2",
-                if (LITE) tags$span(
-                        style = paste(
-                                "background:#85dafa; color:#404f7c;",
-                                "font-size:11px; font-weight:600; font-style:normal;",
-                                "padding:2px 8px; border-radius:10px;",
-                                "margin-left:10px; vertical-align:middle;"
-                        ),
-                        "LITE"
-                ),
                 style = "color:white; font-size:24px; font-weight:bold; font-style: italic;"
         ),
         id = "navbar",
@@ -175,7 +144,7 @@ ui <- navbarPage(
                 title = "Overview",
                 tags$div(
                         class = "page-content",
-                        .render_overview(lite = LITE)
+                        .render_overview()
                 )
         ),
 
@@ -225,15 +194,15 @@ ui <- navbarPage(
                                         width = 12,
                                         h3("Usage plot"),
                                         uiOutput("usagePlotOutput"),
-                                        if (!LITE) tags$br(),
-                                        if (!LITE) tags$div(
+                                        tags$br(),
+                                        tags$div(
                                                 style = "color: #666666; font-size: 12px;",
                                                 tags$b("Interpretation: "),
                                                 "Use this heatmap as a sanity check to identify potential outliers and to assess sample clustering by shared program usage. ",
                                                 "Compare usage-driven clusters with sample annotations (e.g., Verhaak subtype, primary vs. recurrence, tumor purity), ",
                                                 "as these patterns typically correspond to correlation structure used downstream by sotk2."
                                         ),
-                                        if (!LITE) tags$br()
+                                        tags$br()
                                 )
                         )
                 )
@@ -249,35 +218,27 @@ ui <- navbarPage(
                                 # Step selector is the tabsetPanel id below (input.demos_step)
                                 conditionalPanel(
                                         condition = "input.demos_step == 'Step 1'",
-                                        if (LITE) {
-                                                tags$div(
-                                                        style = "color:#4d4d4d; font-size: 12px;",
-                                                        "Welcome — you're on the LITE preview. Recompute controls are off so the precomputed analysis stays snappy for everyone. To explore with every input live, run the FULL version locally via Docker."
-                                                )
-                                        } else {
-                                                tags$div(
-                                                        style = "color:#4d4d4d; font-size: 12px;",
-                                                        "Alert: adjusting the options below may take time."
-                                                )
-                                        },
+                                        tags$div(
+                                                style = "color:#4d4d4d; font-size: 12px;",
+                                                "Alert: adjusting the options below may take time."
+                                        ),
                                         tags$br(),
-                                        if (!LITE) selectInput(
+                                        selectInput(
                                                 inputId = "demo1_cor_method",
                                                 label = "Correlation method",
-                                                choices = c("Spearman" = "spearman", "Pearson" = "pearson", "Kendall" = "kendall"),
+                                                choices = c("Spearman" = "spearman", "Pearson" = "pearson"),
                                                 selected = "spearman"
                                         ),
-                                        if (!LITE) checkboxGroupInput(
+                                        checkboxGroupInput(
                                                 inputId = "demo1_datasets",
                                                 label = "Datasets to include",
                                                 choices = c("GLASS", "IVYGAP", "HEILAND"),
                                                 selected = c("GLASS", "IVYGAP", "HEILAND")
-                                        ),
-                                        if (LITE) .interpretation_step(1)
+                                        )
                                 ),
                                 conditionalPanel(
                                         condition = "input.demos_step == 'Step 2'",
-                                        if (!LITE) numericInput(
+                                        numericInput(
                                                 inputId = "demo2_coef_thre",
                                                 label = "Correlation coefficient threshold",
                                                 value = 0.3,
@@ -290,18 +251,17 @@ ui <- navbarPage(
                                                 label = "Show labels",
                                                 choices = c("FALSE" = "FALSE", "TRUE" = "TRUE"),
                                                 selected = "FALSE"
-                                        ),
-                                        if (LITE) .interpretation_step(2)
+                                        )
                                 ),
                                 conditionalPanel(
                                         condition = "input.demos_step == 'Step 3'",
-                                        if (!LITE) selectInput(
+                                        selectInput(
                                                 inputId = "demo3_search_met",
                                                 label = "Community detection algorithm",
                                                 choices = c(
                                                         "Fast greedy" = "greedy",
                                                         "Leiden" = "leiden",
-                                                        "Betweeness" = "betweeness",
+                                                        "Betweenness" = "betweenness",
                                                         "Random walk" = "randomwalk",
                                                         "Eigen" = "eigen",
                                                         "Louvain" = "louvain"
@@ -335,8 +295,7 @@ ui <- navbarPage(
                                                 min = 0,
                                                 max = 1,
                                                 step = 0.1
-                                        ),
-                                        if (LITE) .interpretation_step(3)
+                                        )
                                 ),
                                 conditionalPanel(
                                         condition = "input.demos_step == 'Step 4'",
@@ -352,7 +311,7 @@ ui <- navbarPage(
                                                 choices = c("Community" = "community", "Cohort" = "cohort"),
                                                 selected = "community"
                                         ),
-                                        if (!LITE) numericInput(
+                                        numericInput(
                                                 inputId = "demo4_comm_weight",
                                                 label = "Community rewiring weight ",
                                                 value = 100,
@@ -360,15 +319,14 @@ ui <- navbarPage(
                                                 max = 100,
                                                 step = 10
                                         ),
-                                        if (!LITE) numericInput(
+                                        numericInput(
                                                 inputId = "demo4_cohort_weight",
                                                 label = "Cohort rewiring weight ",
                                                 value = 10,
                                                 min = 10,
                                                 max = 100,
                                                 step = 10
-                                        ),
-                                        if (LITE) .interpretation_step(4)
+                                        )
                                 ),
                                 conditionalPanel(
                                         condition = "input.demos_step == 'Step 5'",
@@ -382,8 +340,7 @@ ui <- navbarPage(
                                                         "IVYGAP (anatomical features)" = "ivygap"
                                                 ),
                                                 selected = "layout"
-                                        ),
-                                        if (LITE) .interpretation_step(5)
+                                        )
                                 ),
                                 conditionalPanel(
                                         condition = "input.demos_step == 'Step 6'",
@@ -394,16 +351,15 @@ ui <- navbarPage(
                                                 selected = "GLASS"
                                         ),
                                         uiOutput("demo6_comm_ui"),
-                                        if (!LITE) tags$hr(),
-                                        if (!LITE) downloadButton(
+                                        tags$hr(),
+                                        downloadButton(
                                                 outputId = "demo6_download_soObj",
                                                 label = "Download soObj.RDS"
                                         ),
-                                        if (!LITE) tags$div(
+                                        tags$div(
                                                 style = "color:#4d4d4d; font-size: 12px; margin-top: 6px;",
                                                 "This exports the most recent soObj object used to generate the tutorial figures."
-                                        ),
-                                        if (LITE) .interpretation_step(6)
+                                        )
                                 )
                         ),
                         mainPanel(
@@ -416,8 +372,8 @@ ui <- navbarPage(
                                                         class = "sq-plot-wrap",
                                                         plotOutput("demo1_corr_density", width = "100%")
                                                 ),
-                                                if (!LITE) tags$br(),
-                                                if (!LITE) tags$div(
+                                                tags$br(),
+                                                tags$div(
                                                         style = "color:#4d4d4d; font-size: 12px;",
                                                         tags$b("Interpretation: "),
                                                         "Diagonal panels summarize within-dataset correlation distributions; lower-left panels summarize between-dataset correlations. ",
@@ -439,8 +395,8 @@ ui <- navbarPage(
                                                         class = "sq-plot-wrap",
                                                         plotOutput("demo2_network", width = "100%")
                                                 ),
-                                                if (!LITE) tags$br(),
-                                                if (!LITE) tags$div(
+                                                tags$br(),
+                                                tags$div(
                                                         style = "color:#4d4d4d; font-size: 12px;",
                                                         tags$b("Interpretation: "),
                                                         "Edges represent correlations between metagenes retained after applying coefThre. ",
@@ -455,8 +411,8 @@ ui <- navbarPage(
                                                         class = "sq-plot-wrap",
                                                         plotOutput("demo3_network", width = "100%")
                                                 ),
-                                                if (!LITE) tags$br(),
-                                                if (!LITE) tags$div(
+                                                tags$br(),
+                                                tags$div(
                                                         style = "color:#4d4d4d; font-size: 12px;",
                                                         tags$b("Interpretation: "),
                                                         "Communities are identified using the selected community detection algorithm (searchMet) and nodes are annotated by their assigned community (annot = 'community'). ",
@@ -471,8 +427,8 @@ ui <- navbarPage(
                                                         class = "sq-plot-wrap",
                                                         plotOutput("demo4_network", width = "100%")
                                                 ),
-                                                if (!LITE) tags$br(),
-                                                if (!LITE) tags$div(
+                                                tags$br(),
+                                                tags$div(
                                                         style = "color:#4d4d4d; font-size: 12px;",
                                                         tags$b("Interpretation: "),
                                                         "This panel visualizes the weighted layout (weighted = TRUE). ",
@@ -487,8 +443,8 @@ ui <- navbarPage(
                                                         class = "sq-plot-wrap",
                                                         plotOutput("demo5_comm_network", width = "100%")
                                                 ),
-                                                if (!LITE) tags$br(),
-                                                if (!LITE) tags$div(
+                                                tags$br(),
+                                                tags$div(
                                                         style = "color:#4d4d4d; font-size: 12px;",
                                                         tags$b("Interpretation: "),
                                                         "This panel summarizes the network at the community level, where each node represents a community and edges represent inter-community connectivity. ",
@@ -505,8 +461,8 @@ ui <- navbarPage(
                                                         class = "sq-plot-wrap",
                                                         plotOutput("demo6_geomean_plot", width = "100%")
                                                 ),
-                                                if (!LITE) tags$br(),
-                                                if (!LITE) tags$div(
+                                                tags$br(),
+                                                tags$div(
                                                         style = "color:#4d4d4d; font-size: 12px;",
                                                         tags$b("Interpretation: "),
                                                         "For the selected cohort and community, this panel summarizes per-sample community activity using the geometric mean of metagene usage values. ",
@@ -520,9 +476,8 @@ ui <- navbarPage(
                 )
         ),
 
-        #-#-#- Interpretation (FULL only; in LITE the per-step sidebar already
-        #                      shows the same content, so this tab is redundant)
-        if (!LITE) tabPanel(
+        #-#-#- Interpretation
+        tabPanel(
                 title = "Interpretation",
                 tags$div(class = "page-content", shiny::includeMarkdown("interpretation.md"))
         ),
@@ -604,7 +559,7 @@ server <- function(input, output, session) {
         demo1_soSet <- reactive({
                 demo1_last_error(NULL)
 
-                if (LITE || !demo1_inputs_changed()) {
+                if (!demo1_inputs_changed()) {
                         if (is.null(soObj) || is.null(soObj@SOSet)) {
                                 demo1_last_error("ERROR: soObj@SOSet is not available. Please confirm data/soObj.RDS contains an SOSet.")
                                 return(NULL)
@@ -676,9 +631,6 @@ server <- function(input, output, session) {
         demo2_soObj <- reactive({
                 demo2_last_error(NULL)
 
-                if (LITE) {
-                        return(soObj)
-                }
 
                 if (!demo1_inputs_changed() &&
                         isTRUE(all.equal(input$demo2_coef_thre, 0.3)) &&
@@ -738,12 +690,9 @@ server <- function(input, output, session) {
         demo3_soObj <- reactive({
                 demo3_last_error(NULL)
 
-                if (LITE) {
-                        return(soObj)
-                }
 
                 searchMet <- input$demo3_search_met
-                if (is.null(searchMet) || !(searchMet %in% c("greedy", "leiden", "betweeness", "randomwalk", "eigen", "louvain"))) {
+                if (is.null(searchMet) || !(searchMet %in% c("greedy", "leiden", "betweenness", "randomwalk", "eigen", "louvain"))) {
                         searchMet <- "greedy"
                 }
 
@@ -825,9 +774,6 @@ server <- function(input, output, session) {
         demo4_soObj <- reactive({
         demo4_last_error(NULL)
 
-        if (LITE) {
-                return(soObj)
-        }
 
         cw <- suppressWarnings(as.numeric(input$demo4_comm_weight))
         hw <- suppressWarnings(as.numeric(input$demo4_cohort_weight))
@@ -839,7 +785,7 @@ server <- function(input, output, session) {
 
         # NEW: carry forward searchMet from Step 3
         searchMet <- input$demo3_search_met
-        if (is.null(searchMet) || !(searchMet %in% c("greedy", "leiden", "betweeness", "randomwalk", "eigen", "louvain"))) {
+        if (is.null(searchMet) || !(searchMet %in% c("greedy", "leiden", "betweenness", "randomwalk", "eigen", "louvain"))) {
                 searchMet <- "greedy"
         }
 

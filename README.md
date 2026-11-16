@@ -6,19 +6,26 @@ Companion artifacts:
 - R package: <https://github.com/Snyder-Institute/sotk2>
 - Documentation: <https://Snyder-Institute.github.io/sotk2/>
 - Docker image: <https://hub.docker.com/r/thebiohub/sotk2> (bundles this app + demo data)
-- Docker source: <https://github.com/Snyder-Institute/sotk2-docker>
 
 ## Run with Docker (recommended)
 
 The Docker image bundles the demo data and the right R environment; no local R setup needed.
 
 ```bash
-docker pull thebiohub/sotk2:latest
-docker run --rm -p 11630:11630 thebiohub/sotk2:latest
+docker pull thebiohub/sotk2:1.1.2
+docker run --rm -p 11630:11630 thebiohub/sotk2:1.1.2
 open http://localhost:11630
 ```
 
-Stop with `docker stop sotk2`. See [sotk2-docker](https://github.com/Snyder-Institute/sotk2-docker) for a launcher that auto-opens the browser.
+Or use the bundled launcher, which starts the container, waits for the app and opens your browser:
+
+```bash
+curl -O https://raw.githubusercontent.com/Snyder-Institute/sotk2-shiny/main/docker/launch.sh
+chmod +x launch.sh
+IMAGE=thebiohub/sotk2:1.1.2 ./launch.sh
+```
+
+Ctrl-C stops the container. Pin a specific version in production (`thebiohub/sotk2:1.1.2`), not `latest`.
 
 ## Run locally from source
 
@@ -33,35 +40,33 @@ Rscript -e "shiny::runApp('.', port = 11630)"
 
 `setup_data.R` writes ~120 MB of `.RDS` files to `data/` (gitignored) and builds the precomputed `soObj.RDS` with the default settings expected by the app.
 
-## Run modes — `SOTK2_MODE`
+## Building the Docker image
 
-The app supports two runtime modes selected via the `SOTK2_MODE` environment variable:
-
-| Mode | Behavior |
-|------|----------|
-| `full` (default) | Every Tutorial input is live. The user can recompute `SOSet()` and `SOTK()` with different correlation methods, datasets, thresholds, community detection algorithms, and rewiring weights. Suitable for power users on a host with adequate CPU. |
-| `lite` | The app displays the precomputed `soObj.RDS` only. All recompute controls are hidden, and the underlying reactives short-circuit to the precomputed object. Display-only controls (label toggles, node size, annotation choice, cohort/community pickers) remain live. Suitable for public/open deployments. |
-
-Examples:
+The image is built from this repository (`docker/Dockerfile`, build context = repo root).
 
 ```bash
-SOTK2_MODE=lite Rscript -e "shiny::runApp('.', port = 11630)"
-SOTK2_MODE=full Rscript -e "shiny::runApp('.', port = 11630)"
+Rscript scripts/setup_data.R     # one-time: populate data/ (baked into the image)
+docker/build.sh local            # native arch, --load into local docker (fast)
+docker/build.sh push 1.1.2       # multi-arch (amd64 + arm64), push to Docker Hub
 ```
 
-With Docker:
+Multi-arch builds use `docker buildx` with the `sotk2-multiarch` builder. On Apple Silicon, the arm64 layer builds natively while amd64 is emulated (slower, but runs natively on x86 hosts after push).
 
-```bash
-docker run --rm -p 11630:11630 -e SOTK2_MODE=full thebiohub/sotk2:latest
-```
+The image contains R 4.5 ([`rocker/r-ver:4.5`](https://hub.docker.com/r/rocker/r-ver), multi-arch), `sotk2` v1.0.0 (pinned to commit `1cf8155`), its CRAN dependencies plus `shiny`, `commonmark`, `BiocManager` and `Biobase`, this app, and the demo data. Each architecture is ~860 MB.
 
-The Docker image sets `SOTK2_MODE=lite` as its default, so the public-facing experience is safe by construction. Power users override with `-e SOTK2_MODE=full`.
+| Tag | Points at |
+|---|---|
+| `1.0.0` | sotk2 R package commit `1cf8155`; ShinyApps-devel app source |
+| `1.1.0` | sotk2 R package commit `1cf8155`; sotk2-shiny app source |
+| `1.1.1` | As `1.1.0`; Citation card in the Overview tab now links the published manuscript |
+| `1.1.2` | Always fully interactive (browse-only mode removed); Kendall removed from the correlation choices (far too slow on the demo data); Betweenness community detection fixed; Docker build moved into this repository |
+| `latest` | The newest released tag |
 
 ## Repository layout
 
 ```
 sotk2-shiny/
-├── app.R                  # Shiny entry point (SOTK2_MODE-aware)
+├── app.R                  # Shiny entry point
 ├── Rsource/
 │   └── preset.R           # Defaults, color maps, helper functions
 ├── overview.md            # "Overview" tab content
@@ -71,6 +76,10 @@ sotk2-shiny/
 ├── scripts/
 │   └── setup_data.R       # Fetches demo data from Zenodo + builds soObj.RDS
 ├── data/                  # Demo data (gitignored; populated by setup_data.R)
+├── docker/
+│   ├── Dockerfile
+│   ├── build.sh           # buildx wrapper: local | push [version]
+│   └── launch.sh          # run the image and open the browser
 └── www/
     ├── css/
     ├── imgs/

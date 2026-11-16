@@ -370,9 +370,9 @@ blockquote:before {
 }
 
 /* -----------------------------
-   Interpretation tab + sidebar-interp shared
+   Interpretation tab
    (extracted from interpretation.md inline <style> so the classes are
-    available globally, including in the Tutorial sidebar)
+    available globally)
 ------------------------------ */
 .interp-wrap {
   max-width: 1100px;
@@ -465,59 +465,3 @@ blockquote:before {
 }
 .ul-tight       { margin: 6px 0 0 18px; }
 .ul-tight li    { margin: 4px 0; }
-
-/* -----------------------------
-   .sidebar-interp — fully independent style set for the Tutorial sidebar.
-   Uses its own classes (.sidebar-section*) so it does NOT share or fight
-   with the Interpretation tab's .step-card/.step-table rules.
-   Built by .interpretation_step() in Rsource/preset.R, which transforms
-   each interpretation step's <td> cells into <div class="sidebar-section">.
------------------------------- */
-.sidebar-interp {
-  font-size: 12px;
-  color: #222;
-  line-height: 1.5;
-  margin-top: 12px;
-}
-.sidebar-interp .sidebar-step-card {
-  border: 1px solid #e6e6e6;
-  border-radius: 10px;
-  padding: 10px 12px;
-  background: #fff;
-}
-.sidebar-interp .sidebar-step-title {
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-.sidebar-interp .sidebar-section {
-  border-top: 1px solid #ededed;
-  padding: 8px 0;
-}
-.sidebar-interp .sidebar-section:first-of-type {
-  border-top: none;
-  padding-top: 4px;
-}
-.sidebar-interp .sidebar-section-head {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-.sidebar-interp .sidebar-rep  { background: rgba(133, 218, 250, 0.35); color: #1a3c55; }
-.sidebar-interp .sidebar-look { background: rgba( 64,  79, 124, 0.12); color: #2a2f4f; }
-.sidebar-interp .sidebar-use  { background: rgba( 16, 185, 129, 0.16); color: #065f46; }
-.sidebar-interp .sidebar-note { background: rgba(214, 104,  83, 0.14); color: #5a1f16; }
-.sidebar-interp p {
-  margin: 4px 0;
-  font-size: 12px;
-}
-.sidebar-interp ul {
-  margin: 4px 0 0 16px;
-  padding: 0;
-}
-.sidebar-interp li {
-  margin: 2px 0;
-}

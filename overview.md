@@ -73,8 +73,6 @@ p { line-height: 1.55; }
 
 **sotk2** is designed to be **self-contained and independent**: it does not require any prior packages or objects outside this repository. Inputs may come from any platform or modality (for example, bulk RNA-seq, single-cell RNA-seq, spatial transcriptomics, or protein abundance), as long as NMF/cNMF outputs are available (or can be imported).
 
-<!--LITE_BANNER-->
-
 <div class="hr-soft"></div>
 
 <div class="grid-2">

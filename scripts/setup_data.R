@@ -21,7 +21,18 @@ if (!requireNamespace("sotk2", quietly = TRUE)) {
         )
 }
 
-repo_root <- normalizePath(file.path(dirname(sys.frame(1)$ofile), ".."), mustWork = TRUE)
+# Locate this script whether run via `Rscript scripts/setup_data.R` or source().
+script_path <- local({
+        file_arg <- grep("^--file=", commandArgs(trailingOnly = FALSE), value = TRUE)
+        if (length(file_arg) == 1) {
+                sub("^--file=", "", file_arg)
+        } else {
+                ofile <- tryCatch(sys.frame(1)$ofile, error = function(e) NULL)
+                if (is.null(ofile)) stop("Cannot locate setup_data.R; run it as `Rscript scripts/setup_data.R` from the repo root.")
+                ofile
+        }
+})
+repo_root <- normalizePath(file.path(dirname(script_path), ".."), mustWork = TRUE)
 data_dir <- file.path(repo_root, "data")
 if (!dir.exists(data_dir)) dir.create(data_dir, recursive = TRUE)
 
